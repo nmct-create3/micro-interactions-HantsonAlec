@@ -4,7 +4,30 @@ let email = {},
     passwordOptions = ['text', 'password'],
     passwordInput,
     toggle;
-function handleFloatingLabel() {}
+function handleFloatingLabel()
+{
+    email.input.addEventListener('blur', function () {
+        if (!isEmpty(email.input.value))
+        {
+            email.field.classList.add('is-floating');
+            console.log('floating')
+        } else
+        {
+            email.field.classList.remove('is-floating');
+            console.log('not floating')
+        }
+    });
+
+    password.input.addEventListener('blur', function () {
+        if (!isEmpty(password.input.value))
+        {
+            password.field.classList.add('is-floating');
+        } else
+        {
+            password.field.classList.remove('is-floating');
+        }
+    });    
+}
 
 function handlePasswordSwitcher() {
     toggle.addEventListener('change', function () {
@@ -33,7 +56,7 @@ function enableListeners() {
         } else {
             if (!isEmpty(email.input.value)) { 
                 //Als alles oke is dan mag het weg
-                removeErrors(email.field, email.errorMessage);
+                removeErrors(email.field, email.errorMessage,'Email');
                 email.input.removeEventListener('input', doubleCheckEmailAddress);
             }
         }
@@ -45,7 +68,7 @@ function enableListeners() {
         } else {
             if (!isEmpty(password.input.value)) { 
                 //Als alles oke is dan mag het weg
-                removeErrors(password.field, password.errorMessage);
+                removeErrors(password.field, password.errorMessage,'Password');
                 password.input.removeEventListener('input', doubleCheckPassword);
             }
         }
@@ -61,7 +84,7 @@ function enableListeners() {
             if (!isEmpty(email.input.value)) { 
                 //Als alles oke is dan mag het weg
                 validEmail = true;
-                removeErrors(email.field, email.errorMessage);
+                removeErrors(email.field, email.errorMessage,'Email');
                 email.input.removeEventListener('input', doubleCheckEmailAddress);
             }
         }
@@ -72,7 +95,7 @@ function enableListeners() {
             if (!isEmpty(password.input.value)) { 
                 //Als alles oke is dan mag het weg
                 validPw = true;
-                removeErrors(password.field, password.errorMessage);
+                removeErrors(password.field, password.errorMessage,'Password');
                 password.input.removeEventListener('input', doubleCheckPassword);
             }
         }
@@ -93,7 +116,7 @@ function enableListeners() {
 }
 const doubleCheckEmailAddress = function () {
     if (!isEmpty(email.input.value) && isValidEmailAddress(email.input.value)) {
-        removeErrors(email.field, email.errorMessage);
+        removeErrors(email.field, email.errorMessage,'Email');
         email.input.removeEventListener('input', doubleCheckEmailAddress);
     } else {
         addErrors(email.field, email.errorMessage, "This email is incorrect");
@@ -101,7 +124,7 @@ const doubleCheckEmailAddress = function () {
 }
 const doubleCheckPassword = function () {
     if (!isEmpty(password.input.value) && isValidPassword(password.input.value)) {
-        removeErrors(password.field, password.errorMessage);
+        removeErrors(password.field, password.errorMessage,'Password');
         password.input.removeEventListener('input', doubleCheckPassword);
     } else {
         addErrors(password.field, password.errorMessage, "This password is incorrect");
@@ -112,10 +135,11 @@ const addErrors = function (formfield,errorField, errorMessage) {
     errorField.style.display = 'block';
     errorField.innerHTML = errorMessage;
  }
-const removeErrors = function (formfield,errorField) {
+const removeErrors = function (formfield,errorField,message) {
     formfield.classList.remove('has-error');
     //TODO: toggle dit met class (u-block/u-none)
-    errorField.style.display = 'none';
+    errorField.innerHTML = message;
+    errorField.style.display = 'block';
 }
 
 const isValidEmailAddress = function (emailAddress) {
@@ -129,6 +153,7 @@ const isValidPassword = function (password) {
 const isEmpty = function (fieldValue) {
     return !fieldValue || !fieldValue.length;
 };
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Script loaded!');
     getDOMElements();
